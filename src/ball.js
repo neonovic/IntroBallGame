@@ -5,10 +5,14 @@ export default class Ball {
     this.image = document.getElementById("img_ball");
     this.gameWidth = game.gameWidth;
     this.gameHeight = game.gameHeight;
-    this.speed = { x: 6, y: -4 };
-    this.position = { x: 10, y: 10 };
     this.size = 30;
     this.game = game;
+    this.reset();
+  }
+
+  reset() {
+    this.speed = { x: 8, y: -6 };
+    this.position = { x: 10, y: 300 };
   }
 
   draw(ctx) {
@@ -28,8 +32,12 @@ export default class Ball {
     if (this.position.x > this.gameWidth - this.size || this.position.x < 0)
       this.speed.x = -this.speed.x;
 
-    if (this.position.y > this.gameHeight - this.size || this.position.y < 0)
-      this.speed.y = -this.speed.y;
+    if (this.position.y < 0) this.speed.y = -this.speed.y;
+
+    if (this.position.y > this.gameHeight - this.size) {
+      this.game.lives--;
+      this.reset();
+    }
 
     if (detectCollision(this, this.game.paddle)) {
       this.speed.y = -this.speed.y;
