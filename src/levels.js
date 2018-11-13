@@ -7,8 +7,8 @@ export function buildLevel(game, level) {
     row.forEach((brick, brickIndex) => {
       if (brick === 1) {
         let position = {
-          x: 80 * brickIndex,
-          y: 75 + 24 * rowIndex
+          x: Brick.width * brickIndex,
+          y: 75 + Brick.height * rowIndex
         };
         bricks.push(new Brick(game, position));
       }
