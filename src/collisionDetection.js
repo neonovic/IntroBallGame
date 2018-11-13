@@ -1,17 +1,19 @@
 export function detectCollision(ball, gameObject) {
-  // collision with paddle
-  let bottomOfBall = this.position.y + this.size;
-  let topOfBall = this.position.y;
-  let topOfPaddle = this.game.paddle.position.y;
-  let leftSideOfPaddle = this.game.paddle.position.x;
-  let rightSideOfPaddle = this.game.paddle.position.x + this.game.paddle.width;
+  let bottomOfBall = ball.position.y + ball.size;
+  let topOfBall = ball.position.y;
+  let topOfObject = gameObject.position.y;
+  let leftSideOfObject = gameObject.position.x;
+  let rightSideOfObject = gameObject.position.x + gameObject.width;
+  let bottomOfObject = gameObject.position.y + gameObject.height;
 
   if (
-    bottomOfBall >= topOfPaddle &&
-    this.position.x >= leftSideOfPaddle &&
-    this.position.x + this.size <= rightSideOfPaddle
+    bottomOfBall >= topOfObject &&
+    topOfBall <= bottomOfObject &&
+    ball.position.x >= leftSideOfObject &&
+    ball.position.x + ball.size <= rightSideOfObject
   ) {
-    this.speed.y = -this.speed.y;
-    this.position.y = this.game.paddle.position.y - this.size;
+    return true;
+  } else {
+    return false;
   }
 }
