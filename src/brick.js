@@ -1,4 +1,4 @@
-import { detectCollision } from "/src/collisionDetection";
+import { detectCollisionBrick } from "/src/collisionDetection";
 
 export default class Brick {
   constructor(game, position) {
@@ -15,12 +15,13 @@ export default class Brick {
   }
 
   static get height() {
-    return 40;
+    return 67;
   }
 
   update() {
-    if (detectCollision(this.game.ball, this)) {
+    if (detectCollisionBrick(this.game.ball, this)) {
       this.game.ball.speed.y = -this.game.ball.speed.y;
+      this.game.sound.setCurrent(this.game.sound.hit).play();
       this.markedForDeletion = true;
     }
   }

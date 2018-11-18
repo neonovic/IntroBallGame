@@ -1,18 +1,25 @@
-import { detectCollision } from "/src/collisionDetection";
+import {
+  detectCollisionBrick,
+  detectCollisionPaddle
+} from "/src/collisionDetection";
+import { GAMESTATE } from "/src/game";
 
 export default class Ball {
   constructor(game) {
     this.image = document.getElementById("img_ball");
     this.gameWidth = game.gameWidth;
     this.gameHeight = game.gameHeight;
-    this.size = 30;
+    this.size = 40;
     this.game = game;
     this.reset();
   }
 
   reset() {
-    this.speed = { x: 8, y: -6 };
-    this.position = { x: 10, y: 300 };
+    this.speed = {
+      x: 8,
+      y: -4
+    };
+    this.position = { x: Math.floor(Math.random() * 700) + 10, y: 500 };
   }
 
   draw(ctx) {
@@ -35,13 +42,27 @@ export default class Ball {
     if (this.position.y < 0) this.speed.y = -this.speed.y;
 
     if (this.position.y > this.gameHeight - this.size) {
+      this.game.sound.setCurrent(this.game.sound.dead);
+      this.game.sound.current.play();
       this.game.lives--;
       this.reset();
+      this.game.gamestate = GAMESTATE.PAUSED;
+      this.game.sound.current.onended = () =>
+        (this.game.gamestate = GAMESTATE.RUNNING);
     }
 
-    if (detectCollision(this, this.game.paddle)) {
-      this.speed.y = -this.speed.y;
-      this.position.y = this.game.paddle.position.y - this.size;
+    if (this.position.y > this.gameHeight - 100) {
+      let collisionPart = detectCollisionPaddle(this, this.game.paddle);
+      if (collisionPart === "middle") {
+        this.speed.y = -this.speed.y;
+        this.position.y = this.game.paddle.position.y - this.size;
+      } else if (collisionPart === "left") {
+        this.speed.y = -this.speed.y;
+        this.speed.x = this.speed.x - 5;
+      } else if (collisionPart === "right") {
+        this.speed.y = -this.speed.y;
+        this.speed.x = this.speed.x + 5;
+      }
     }
   }
 }
